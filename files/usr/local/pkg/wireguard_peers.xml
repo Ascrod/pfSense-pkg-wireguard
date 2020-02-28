@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE packagegui SYSTEM "../schema/packages.dtd">
+<?xml-stylesheet type="text/xsl" href="../xsl/package.xsl"?>
+<packagegui>
+	<name>wireguard-peers</name>
+	<version>%%PKGVERSION%%</version>
+	<title>VPN: WireGuard</title>
+	<include_file>/usr/local/pkg/wireguard.inc</include_file>
+	<tabs>
+		<tab>
+			<text>Interface</text>
+			<url>/pkg_edit.php?xml=wireguard.xml</url>
+		</tab>
+		<tab>
+			<text>Peers</text>
+			<url>/pkg.php?xml=wireguard_peers.xml</url>
+			<active/>
+		</tab>
+	</tabs>
+	<advanced_options>enabled</advanced_options>
+	<adddeleteeditpagefields>
+		<columnitem>
+			<fielddescr>Name</fielddescr>
+			<fieldname>name</fieldname>
+		</columnitem>
+		<columnitem>
+			<fielddescr>Endpoint</fielddescr>
+			<fieldname>endpoint</fieldname>
+		</columnitem>
+	</adddeleteeditpagefields>
+	<fields>
+		<field>
+			<name>Peer Settings</name>
+			<type>listtopic</type>
+		</field>
+		<field>
+			<fielddescr>Name</fielddescr>
+			<fieldname>name</fieldname>
+			<description>
+				<![CDATA[
+				Name of the peer.
+				]]>
+			</description>
+			<type>input</type>
+			<required/>
+		</field>
+		<field>
+			<fielddescr>Endpoint</fielddescr>
+			<fieldname>endpoint</fieldname>
+			<description>
+				<![CDATA[
+				IP address or hostname, followed by a colon, and then a port number.</br>
+				(Examples: 192.0.2.3:2468, www.example.com:51820)
+				]]>
+			</description>
+			<type>input</type>
+		</field>
+		<field>
+			<fielddescr>Public Key</fielddescr>
+			<fieldname>publickey</fieldname>
+			<description>
+				<![CDATA[
+				Base 64 public key used by this peer.
+				]]>
+			</description>
+			<type>input</type>
+			<encoding>base64</encoding>
+			<required/>
+		</field>
+		<field>
+			<fielddescr>Allowed IPs</fielddescr>
+			<fieldname>allowedips</fieldname>
+			<description>
+				<![CDATA[
+				IP ranges in CIDR notation allowed for use by the peer. Use 0.0.0.0/0</br>
+				to allow all IPv4 addresses, and ::/0 to allow all IPv6 addresses.</br>
+				Multiple address ranges may be entered, one per line.</br>
+				(Example: 192.0.2.0/24)
+				]]>
+			</description>
+			<type>textarea</type>
+			<encoding>base64</encoding>
+			<rows>4</rows>
+			<cols>65</cols>
+			<required/>
+		</field>
+		<field>
+			<fielddescr>Preshared Key</fielddescr>
+			<fieldname>psk</fieldname>
+			<description>
+				<![CDATA[
+				Base 64 public key used to authenticate with this peer.
+				]]>
+			</description>
+			<type>input</type>
+			<encoding>base64</encoding>
+		</field>
+		<field>
+			<fielddescr>Generate Preshared Key</fielddescr>
+			<fieldname>genpsk</fieldname>
+			<description>
+				<![CDATA[
+				Automatically generate a new preshared key.
+				]]>
+			</description>
+			<type>checkbox</type>
+		</field>
+		<field>
+			<fielddescr>Persistent Keep Alive</fielddescr>
+			<fieldname>keepalive</fieldname>
+			<description>
+				<![CDATA[
+				Seconds between keep alive messages. Must be between 1 and 65535.</br>
+				Set to 0 to disable. If running behind a NAT, the recommended value is 25.
+				]]>
+			</description>
+			<type>input</type>
+			<advancedfield/>
+		</field>
+	</fields>
+	<custom_delete_php_command>
+		wireguard_resync();
+	</custom_delete_php_command>
+	<custom_php_resync_config_command>
+		wireguard_resync();
+	</custom_php_resync_config_command>
+	<custom_php_validation_command>
+		wireguard_validate_peer($_POST, $input_errors);
+	</custom_php_validation_command>
+</packagegui>

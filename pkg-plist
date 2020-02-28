@@ -1,0 +1,8 @@
+pkg/wireguard.xml
+pkg/wireguard_peers.xml
+pkg/wireguard.inc
+www/status_wireguard.php
+www/shortcuts/pkg_wireguard.inc
+/etc/inc/priv/wireguard.priv.inc
+%%DATADIR%%/info.xml
+@dir /etc/inc/priv

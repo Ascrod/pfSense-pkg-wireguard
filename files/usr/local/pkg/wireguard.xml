@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE packagegui SYSTEM "../schema/packages.dtd">
+<?xml-stylesheet type="text/xsl" href="../xsl/package.xsl"?>
+<packagegui>
+	<name>wireguard</name>
+	<version>%%PKGVERSION%%</version>
+	<title>VPN: WireGuard</title>
+	<include_file>/usr/local/pkg/wireguard.inc</include_file>
+	<menu>
+		<name>WireGuard</name>
+		<section>VPN</section>
+		<configfile>wireguard.xml</configfile>
+		<url>/pkg_edit.php?xml=wireguard.xml</url>
+	</menu>
+	<menu>
+		<name>WireGuard VPN</name>
+		<section>Status</section>
+		<url>/status_wireguard.php</url>
+	</menu>
+	<service>
+		<name>wireguard</name>
+		<rcfile>wireguard.sh</rcfile>
+		<executable>wireguard-go</executable>
+		<description>WireGuard VPN</description>
+	</service>
+	<tabs>
+		<tab>
+			<text>Interface</text>
+			<url>/pkg_edit.php?xml=wireguard.xml</url>
+			<active/>
+		</tab>
+		<tab>
+			<text>Peers</text>
+			<url>/pkg.php?xml=wireguard_peers.xml</url>
+		</tab>
+	</tabs>
+	<advanced_options>enabled</advanced_options>
+	<fields>
+		<field>
+			<name>Interface Settings</name>
+			<type>listtopic</type>
+		</field>
+		<field>
+			<fielddescr>Address</fielddescr>
+			<fieldname>address</fieldname>
+			<description>
+				<![CDATA[
+				IP address or range for the network, in CIDR notation.</br>
+				Multiple address ranges may be entered, one per line.</br>
+				(Example: 192.0.2.3/32)
+				]]>
+			</description>
+			<type>textarea</type>
+			<encoding>base64</encoding>
+			<rows>2</rows>
+			<cols>65</cols>
+			<required/>
+		</field>
+		<field>
+			<fielddescr>Listen Port</fielddescr>
+			<fieldname>listenport</fieldname>
+			<description>
+				<![CDATA[
+				Local port to listen on. If not specified, one will be chosen randomly.
+				]]>
+			</description>
+			<type>input</type>
+		</field>
+		<field>
+			<fielddescr>DNS</fielddescr>
+			<fieldname>dns</fieldname>
+			<description>
+				<![CDATA[
+				DNS server address to use for the network.</br>
+				Multiple servers may be entered, one per line.
+				]]>
+			</description>
+			<type>textarea</type>
+			<encoding>base64</encoding>
+			<rows>2</rows>
+			<cols>65</cols>
+		</field>
+		<field>
+			<fielddescr>Private Key</fielddescr>
+			<fieldname>privatekey</fieldname>
+			<description>
+				<![CDATA[
+				Base64 private key used for authentication.
+				]]>
+				</description>
+			<type>input</type>
+			<encoding>base64</encoding>
+		</field>
+		<field>
+			<fielddescr>Public Key</fielddescr>
+			<fieldname>publickey</fieldname>
+			<description>
+				<![CDATA[
+				Base64 public key used for authentication.
+				]]>
+				</description>
+			<type>input</type>
+			<encoding>base64</encoding>
+		</field>
+		<field>
+			<fielddescr>Generate Keys</fielddescr>
+			<fieldname>genkeys</fieldname>
+			<description>
+				<![CDATA[
+				Automatically generate new private and public keys.
+				]]>
+			</description>
+			<type>checkbox</type>
+		</field>
+		<field>
+			<fielddescr>MTU</fielddescr>
+			<fieldname>mtu</fieldname>
+			<description>
+				<![CDATA[
+				Override the MTU for the interface. A typical value is 1500.
+				]]>
+			</description>
+			<type>input</type>
+			<advancedfield/>
+		</field>
+		<field>
+			<fielddescr>Table</fielddescr>
+			<fieldname>table</fieldname>
+			<description>
+				<![CDATA[
+				Specify the routing table to use for VPN routes. This may also be</br>
+				set to "off" to disable the creation of routes, or "auto" to use the</br>
+				default table and enable special handling of default routes.
+				]]>
+			</description>
+			<type>input</type>
+			<advancedfield/>
+		</field>
+		<field>
+			<fielddescr>PreUp Script</fielddescr>
+			<fieldname>preup</fieldname>
+			<description>
+				<![CDATA[
+				Optional commands to run before bringing the interface up.</br>
+				Multiple commands may be entered, one per line.
+				]]>
+			</description>
+			<type>textarea</type>
+			<encoding>base64</encoding>
+			<rows>4</rows>
+			<cols>65</cols>
+			<advancedfield/>
+		</field>
+		<field>
+			<fielddescr>PostUp Script</fielddescr>
+			<fieldname>postup</fieldname>
+			<description>
+				<![CDATA[
+				Optional commands to run after bringing the interface up.</br>
+				Multiple commands may be entered, one per line.
+				]]>
+			</description>
+			<type>textarea</type>
+			<encoding>base64</encoding>
+			<rows>4</rows>
+			<cols>65</cols>
+			<advancedfield/>
+		</field>
+		<field>
+			<fielddescr>PreDown Script</fielddescr>
+			<fieldname>predown</fieldname>
+			<description>
+				<![CDATA[
+				Optional commands to run before bringing the interface down.</br>
+				Multiple commands may be entered, one per line.
+				]]>
+			</description>
+			<type>textarea</type>
+			<encoding>base64</encoding>
+			<rows>4</rows>
+			<cols>65</cols>
+			<advancedfield/>
+		</field>
+		<field>
+			<fielddescr>PostDown Script</fielddescr>
+			<fieldname>postdown</fieldname>
+			<description>
+				<![CDATA[
+				Optional commands to run after bringing the interface down.</br>
+				Multiple commands may be entered, one per line.
+				]]>
+			</description>
+			<type>textarea</type>
+			<encoding>base64</encoding>
+			<rows>4</rows>
+			<cols>65</cols>
+			<advancedfield/>
+		</field>
+	</fields>
+	<custom_php_install_command>
+		wireguard_install();
+	</custom_php_install_command>
+	<custom_php_deinstall_command/>
+	<custom_php_validation_command>
+		wireguard_validate_interface($_POST, $input_errors);
+	</custom_php_validation_command>
+	<custom_php_resync_config_command>
+		wireguard_resync();
+	</custom_php_resync_config_command>
+</packagegui>
