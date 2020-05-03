@@ -105,6 +105,11 @@ function wireguard_validate_peer($post, &$input_errors) {
 	}
 }
 
+function wireguard_validate_gen_config($post, &$input_errors) {
+	# We shoud never get here, but just in case.
+	$input_errors[] = gettext("Always cancel save.");
+}
+	
 function wireguard_resync() {
 	global $config, $configpath, $ifname;
 	$configpath = "/usr/local/etc/wireguard/{$ifname}.conf";
@@ -249,4 +254,10 @@ function wireguard_install() {
 	wireguard_write_rcfile();
 }
 
+# $_SERVER['REQUEST_URI'] == "/pkg_edit.php?xml=wireguard.xml";
+# $_SERVER['QUERY_STRING'] == "xml=wireguard.xml";
+# $_SERVER['PHP_SELF'] == "/pkg_edit.php";
+if ($_SERVER['PHP_SELF'] == "/pkg_edit.php") {
+	echo "<script type='text/javascript' src='wireguard.js'></script>\n";
+}
 ?>

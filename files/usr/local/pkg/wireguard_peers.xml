@@ -38,7 +38,8 @@
 			<fieldname>name</fieldname>
 			<description>
 				<![CDATA[
-				Name of the peer.
+				Name of the peer.</br>
+				<div class="btn btn-primary" onclick="location.href='?xml=wireguard_gen_conf.xml&id='+getQueryId()+'&'+genPeerQueryStr(); return false;">Generate Peer Conf</div>
 				]]>
 			</description>
 			<type>input</type>
@@ -90,20 +91,11 @@
 			<description>
 				<![CDATA[
 				Base 64 public key used to authenticate with this peer.
+				<div class="btn btn-sm btn-info" onclick="apiGetAsync('psk', 'generate'); return false;"><i class="fa fa-undo icon-embed-btn"></i>Generate</div>
 				]]>
 			</description>
 			<type>input</type>
 			<encoding>base64</encoding>
-		</field>
-		<field>
-			<fielddescr>Generate Preshared Key</fielddescr>
-			<fieldname>genpsk</fieldname>
-			<description>
-				<![CDATA[
-				Automatically generate a new preshared key.
-				]]>
-			</description>
-			<type>checkbox</type>
 		</field>
 		<field>
 			<fielddescr>Persistent Keep Alive</fielddescr>

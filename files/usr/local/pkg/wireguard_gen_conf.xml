@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE packagegui SYSTEM "../schema/packages.dtd">
+<?xml-stylesheet type="text/xsl" href="../xsl/package.xsl"?>
+<packagegui>
+	<name>wireguard-peer-config</name>
+	<version>%%PKGVERSION%%</version>
+	<title>VPN: WireGuard</title>
+	<include_file>/usr/local/pkg/wireguard.inc</include_file>
+	<tabs>
+		<tab>
+			<text>Interface</text>
+			<url>/pkg_edit.php?xml=wireguard.xml</url>
+		</tab>
+		<tab>
+			<text>Peers</text>
+			<url>/pkg.php?xml=wireguard_peers.xml</url>
+		</tab>
+		<tab>
+			<text>Generate Peer Conf</text>
+			<url>/pkg_edit.php?xml=wireguard_gen_conf.xml</url>
+			<active/>
+		</tab>
+	</tabs>
+	<advanced_options>enabled</advanced_options>
+	<fields>
+		<field>
+			<name>Remote Peer</name>
+			<type>listtopic</type>
+		</field>
+		<field>
+			<fielddescr>Name</fielddescr>
+			<fieldname>name</fieldname>
+			<description>
+				<![CDATA[
+				Client name used by pfsense.
+				]]>
+			</description>
+			<type>input</type>
+			<required/>
+		</field>
+		<field>
+			<fielddescr>Address</fielddescr>
+			<fieldname>address</fieldname>
+			<description>
+				<![CDATA[
+				IP address or range for the network, in CIDR notation.</br>
+				Multiple address ranges may be entered, one per line.</br>
+				(Example: 192.0.2.3/32)
+				]]>
+			</description>
+			<type>textarea</type>
+			<encoding>base64</encoding>
+			<rows>2</rows>
+			<cols>65</cols>
+			<required/>
+		</field>
+		<field>
+			<fielddescr>Remote Peer: Listen IP/Hostname</fielddescr>
+			<fieldname>listenip</fieldname>
+			<description>
+				<![CDATA[
+				(optional) This is the remote address pfsense connects to.</br>
+				Do not configure for roaming clients.
+				]]>
+			</description>
+			<type>input</type>
+			<advancedfield/>
+		</field>
+		<field>
+			<fielddescr>Remote Peer: Listen Port</fielddescr>
+			<fieldname>listenport</fieldname>
+			<description>
+				<![CDATA[
+				(optional) This is the remote port pfsense connects to.</br>
+				Do not configure for roaming clients.
+				]]>
+			</description>
+			<type>input</type>
+			<advancedfield/>
+		</field>
+		<field>
+			<fielddescr>DNS</fielddescr>
+			<fieldname>dns</fieldname>
+			<description>
+				<![CDATA[
+				DNS server address to use for the network.</br>
+				Multiple servers may be entered, one per line.
+				]]>
+			</description>
+			<type>textarea</type>
+			<encoding>base64</encoding>
+			<rows>2</rows>
+			<cols>65</cols>
+		</field>
+		<field>
+			<fielddescr>Private Key</fielddescr>
+			<fieldname>privatekey</fieldname>
+			<description>
+				<![CDATA[
+				Base64 private key used for authentication.
+				<div class="btn btn-sm btn-info" onclick="apiGetAsync('privatekey','generate'); return false;"><i class="fa fa-undo icon-embed-btn"></i>Generate</div>
+				]]>
+				</description>
+			<type>input</type>
+			<encoding>base64</encoding>
+		</field>
+		<field>
+			<fielddescr>Public Key</fielddescr>
+			<fieldname>publickey</fieldname>
+			<description>
+				<![CDATA[
+				Base64 public key used for authentication.
+				]]>
+				</description>
+			<type>input</type>
+			<encoding>base64</encoding>
+		</field>
+		<field>
+			<fielddescr>Preshared Key</fielddescr>
+			<fieldname>psk</fieldname>
+			<description>
+				<![CDATA[
+				Base 64 public key used to authenticate with this peer.
+				<div class="btn btn-sm btn-info" onclick="apiGetAsync('psk','generate'); return false;"><i class="fa fa-undo icon-embed-btn"></i>Generate</div>
+				]]>
+			</description>
+			<type>input</type>
+			<encoding>base64</encoding>
+		</field>
+		<field>
+			<name>pfSense Information</name>
+			<type>listtopic</type>
+		</field>
+		<field>
+			<fielddescr>Endpoint IP/Hostname</fielddescr>
+			<fieldname>peer_endpoint_ip</fieldname>
+			<description>
+				<![CDATA[
+				IP address or hostname used by the peer.</br>
+				This is the pfsense external IP/Hostname.</br>
+				(Examples: 192.0.2.3, www.example.com)
+				]]>
+			</description>
+			<type>input</type>
+		</field>
+		<field>
+			<fielddescr>Endpoint Port</fielddescr>
+			<fieldname>peer_endpoint_port</fieldname>
+			<description>
+				<![CDATA[
+				The port number used by the peer.</br>
+				This is the pfsense external IP/Hostname.</br>
+				(Example: 51820)
+				]]>
+			</description>
+			<type>input</type>
+		</field>
+		<field>
+			<fielddescr>Public Key</fielddescr>
+			<fieldname>peer_publickey</fieldname>
+			<description>
+				<![CDATA[
+				Base 64 public key used by this peer.</br>
+				This is the pfsense public key.
+				]]>
+			</description>
+			<type>input</type>
+			<encoding>base64</encoding>
+			<required/>
+		</field>
+		<field>
+			<fielddescr>Allowed IPs</fielddescr>
+			<fieldname>peer_allowedips</fieldname>
+			<description>
+				<![CDATA[
+				IP ranges in CIDR notation allowed for use by the peer. Use 0.0.0.0/0</br>
+				to allow all IPv4 addresses, and ::/0 to allow all IPv6 addresses.</br>
+				Multiple address ranges may be entered, one per line.</br>
+				The default is to route all IPv4 and IPv6 traffic into the VPN. (Example: 192.0.2.0/24)
+				]]>
+			</description>
+			<type>textarea</type>
+			<encoding>base64</encoding>
+			<rows>4</rows>
+			<cols>65</cols>
+			<required/>
+		</field>
+		<field>
+			<fielddescr>Persistent Keep Alive</fielddescr>
+			<fieldname>keepalive</fieldname>
+			<description>
+				<![CDATA[
+				Seconds between keep alive messages. Must be between 1 and 65535.</br>
+				Set to 0 to disable. If running behind a NAT, the recommended value is 25.
+				]]>
+			</description>
+			<type>input</type>
+			<advancedfield/>
+		</field>
+		<field>
+			<name>Config</name>
+			<type>listtopic</type>
+		</field>
+	</fields>
+	<custom_php_install_command>
+	</custom_php_install_command>
+	<custom_php_deinstall_command/>
+	<custom_php_validation_command>
+		wireguard_validate_gen_config($_POST, $input_errors);
+	</custom_php_validation_command>
+	<custom_php_resync_config_command>
+	</custom_php_resync_config_command>
+</packagegui>
