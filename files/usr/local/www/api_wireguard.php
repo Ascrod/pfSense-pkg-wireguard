@@ -70,7 +70,7 @@ function wireguard_generate_vpn_ip() {
 	$interfaces = get_configured_interface_with_descr();
 	foreach ($interfaces as $ifdescr => $ifname) {
 		$ifinfo = get_interface_info($ifdescr);
-		if ($ifinfo['hwif'] == 'tunwg0') {
+		if (preg_match('/^tunwg[\d]+$/', $ifinfo['hwif']) {
 			$int_addr_long = ip2long($ifinfo['ipaddr']);
 			$int_subnet_long = ip2long($ifinfo['subnet']);
 			//$int_subnet_long = ip2long("255.255.255.248");
@@ -97,4 +97,3 @@ function wireguard_generate_vpn_ip() {
 }
 
 wireguard_api();
-?>

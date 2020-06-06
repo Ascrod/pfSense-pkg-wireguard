@@ -239,13 +239,21 @@ function wireguard_resync() {
 }
 
 function wireguard_write_rcfile() {
-	global $ifname;
-	$start = "/usr/local/bin/wg-quick up {$ifname}";
-	$stop = "/usr/local/bin/wg-quick down {$ifname}";
+	$configPaths = glob('/usr/local/etc/wireguard/*.conf');
+	if (empty($configPaths)) {
+		$configPaths = ['tunwg0.conf'];
+	}
+
+	$start = $stop = [];
+	foreach ($configPaths as $configPath) {
+		$ifname = basename($configPath, '.conf');
+		$start[] = "/usr/local/bin/wg-quick up {$ifname}";
+		$stop[] = "/usr/local/bin/wg-quick down {$ifname}";
+	}
 
 	$rcfile['file'] = 'wireguard.sh';
-	$rcfile['start'] = $start;
-	$rcfile['stop'] = $stop;
+	$rcfile['start'] = implode("\n\t", $start);
+	$rcfile['stop'] = implode("\n\t", $stop);
 	write_rcfile($rcfile);
 	unlink_if_exists("/usr/local/etc/rc.d/wireguard");
 }
