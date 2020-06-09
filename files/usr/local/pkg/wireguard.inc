@@ -193,45 +193,47 @@ function wireguard_resync() {
 	}
 
 	$i = 0;
-	foreach ($config['installedpackages']['wireguardpeers']['config'] as $peerconf) {
-		# See if we need to create a preshared key for the peer.
-		if ($peerconf["genpsk"]) {
-			$peerconf['psk'] = base64_encode(wireguard_generate_psk());
+	if (!empty($config['installedpackages']['wireguardpeers']['config'])) {
+		foreach ($config['installedpackages']['wireguardpeers']['config'] as $peerconf) {
+			# See if we need to create a preshared key for the peer.
+			if ($peerconf["genpsk"]) {
+				$peerconf['psk'] = base64_encode(wireguard_generate_psk());
 
-			$config['installedpackages']['wireguardpeers']['config'][$i]['psk'] = $peerconf['psk'];
-			$config['installedpackages']['wireguardpeers']['config'][$i]['genpsk'] = false;
+				$config['installedpackages']['wireguardpeers']['config'][$i]['psk'] = $peerconf['psk'];
+				$config['installedpackages']['wireguardpeers']['config'][$i]['genpsk'] = false;
 
-			# Trigger a resync to update the package config again.
-			write_config("[wireguard] Generated new preshared key.");
-			log_error("[wireguard] Generated new preshared key.");
+				# Trigger a resync to update the package config again.
+				write_config("[wireguard] Generated new preshared key.");
+				log_error("[wireguard] Generated new preshared key.");
+			}
+
+			# Set up the peer config.
+			$output .= "\n[Peer]\n";
+			$output .= "# {$peerconf['name']}\n";
+
+			$endpoint = $peerconf['endpoint'];
+			if ($endpoint) {
+				$output .= "Endpoint = {$endpoint}\n";
+			}
+
+			$pubkey = base64_decode($peerconf['publickey']);
+			$output .= "PublicKey = {$pubkey}\n";
+
+			$allowedips = implode(",", explode("\r\n", base64_decode($peerconf["allowedips"])));
+			$output .= "AllowedIPs = {$allowedips}\n";
+
+			$psk = base64_decode($peerconf['psk']);
+			if ($psk) {
+				$output .= "PresharedKey = {$psk}\n";
+			}
+
+			$keepalive = $peerconf['keepalive'];
+			if ($keepalive <> "") {
+				$output .= "PersistentKeepalive = {$keepalive}\n";
+			}
+
+			$i++;
 		}
-
-		# Set up the peer config.
-		$output .= "\n[Peer]\n";
-		$output .= "# {$peerconf['name']}\n";
-
-		$endpoint = $peerconf['endpoint'];
-		if ($endpoint) {
-			$output .= "Endpoint = {$endpoint}\n";
-		}
-
-		$pubkey = base64_decode($peerconf['publickey']);
-		$output .= "PublicKey = {$pubkey}\n";
-
-		$allowedips = implode(",", explode("\r\n", base64_decode($peerconf["allowedips"])));
-		$output .= "AllowedIPs = {$allowedips}\n";
-
-		$psk = base64_decode($peerconf['psk']);
-		if ($psk) {
-			$output .= "PresharedKey = {$psk}\n";
-		}
-
-		$keepalive = $peerconf['keepalive'];
-		if ($keepalive <> "") {
-			$output .= "PersistentKeepalive = {$keepalive}\n";
-		}
-
-		$i++;
 	}
 
 	# Write out the config file.

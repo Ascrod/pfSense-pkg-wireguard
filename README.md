@@ -14,7 +14,7 @@ Look for latest package links of `wireguard` and `wireguard-go` in [FreeBSD 11 r
 pkg add https://pkg.freebsd.org/FreeBSD:11:amd64/latest/All/wireguard-go-0.0.20200320.txz
 pkg add https://pkg.freebsd.org/FreeBSD:11:amd64/latest/All/wireguard-1.0.20200513.txz
 # pkg add https://pkg.freebsd.org/FreeBSD:11:amd64/latest/All/bash-5.0.17.txz # if dependency is missing
-pkg add https://github.com/Ashus/pfSense-pkg-wireguard/releases/download/v1.0.1/pfSense-pkg-wireguard-1.0.1.txz
+pkg add https://github.com/Ashus/pfSense-pkg-wireguard/releases/download/v1.0.1/pfSense-pkg-wireguard-1.0.1-freebsd11-amd64.txz
 ```
 
 ## Configuration
