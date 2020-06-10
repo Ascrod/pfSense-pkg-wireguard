@@ -105,6 +105,11 @@ function wireguard_validate_peer($post, &$input_errors) {
 	}
 }
 
+function wireguard_validate_gen_config($post, &$input_errors) {
+	# We shoud never get here, but just in case.
+	$input_errors[] = gettext("Always cancel save.");
+}
+	
 function wireguard_resync() {
 	global $config, $configpath, $ifname;
 	$configpath = "/usr/local/etc/wireguard/{$ifname}.conf";
@@ -188,45 +193,47 @@ function wireguard_resync() {
 	}
 
 	$i = 0;
-	foreach ($config['installedpackages']['wireguardpeers']['config'] as $peerconf) {
-		# See if we need to create a preshared key for the peer.
-		if ($peerconf["genpsk"]) {
-			$peerconf['psk'] = base64_encode(wireguard_generate_psk());
+	if (!empty($config['installedpackages']['wireguardpeers']['config'])) {
+		foreach ($config['installedpackages']['wireguardpeers']['config'] as $peerconf) {
+			# See if we need to create a preshared key for the peer.
+			if ($peerconf["genpsk"]) {
+				$peerconf['psk'] = base64_encode(wireguard_generate_psk());
 
-			$config['installedpackages']['wireguardpeers']['config'][$i]['psk'] = $peerconf['psk'];
-			$config['installedpackages']['wireguardpeers']['config'][$i]['genpsk'] = false;
+				$config['installedpackages']['wireguardpeers']['config'][$i]['psk'] = $peerconf['psk'];
+				$config['installedpackages']['wireguardpeers']['config'][$i]['genpsk'] = false;
 
-			# Trigger a resync to update the package config again.
-			write_config("[wireguard] Generated new preshared key.");
-			log_error("[wireguard] Generated new preshared key.");
+				# Trigger a resync to update the package config again.
+				write_config("[wireguard] Generated new preshared key.");
+				log_error("[wireguard] Generated new preshared key.");
+			}
+
+			# Set up the peer config.
+			$output .= "\n[Peer]\n";
+			$output .= "# {$peerconf['name']}\n";
+
+			$endpoint = $peerconf['endpoint'];
+			if ($endpoint) {
+				$output .= "Endpoint = {$endpoint}\n";
+			}
+
+			$pubkey = base64_decode($peerconf['publickey']);
+			$output .= "PublicKey = {$pubkey}\n";
+
+			$allowedips = implode(",", explode("\r\n", base64_decode($peerconf["allowedips"])));
+			$output .= "AllowedIPs = {$allowedips}\n";
+
+			$psk = base64_decode($peerconf['psk']);
+			if ($psk) {
+				$output .= "PresharedKey = {$psk}\n";
+			}
+
+			$keepalive = $peerconf['keepalive'];
+			if ($keepalive <> "") {
+				$output .= "PersistentKeepalive = {$keepalive}\n";
+			}
+
+			$i++;
 		}
-
-		# Set up the peer config.
-		$output .= "\n[Peer]\n";
-		$output .= "# {$peerconf['name']}\n";
-
-		$endpoint = $peerconf['endpoint'];
-		if ($endpoint) {
-			$output .= "Endpoint = {$endpoint}\n";
-		}
-
-		$pubkey = base64_decode($peerconf['publickey']);
-		$output .= "PublicKey = {$pubkey}\n";
-
-		$allowedips = implode(",", explode("\r\n", base64_decode($peerconf["allowedips"])));
-		$output .= "AllowedIPs = {$allowedips}\n";
-
-		$psk = base64_decode($peerconf['psk']);
-		if ($psk) {
-			$output .= "PresharedKey = {$psk}\n";
-		}
-
-		$keepalive = $peerconf['keepalive'];
-		if ($keepalive <> "") {
-			$output .= "PersistentKeepalive = {$keepalive}\n";
-		}
-
-		$i++;
 	}
 
 	# Write out the config file.
@@ -234,13 +241,21 @@ function wireguard_resync() {
 }
 
 function wireguard_write_rcfile() {
-	global $ifname;
-	$start = "/usr/local/bin/wg-quick up {$ifname}";
-	$stop = "/usr/local/bin/wg-quick down {$ifname}";
+	$configPaths = glob('/usr/local/etc/wireguard/*.conf');
+	if (empty($configPaths)) {
+		$configPaths = ['tunwg0.conf'];
+	}
+
+	$start = $stop = [];
+	foreach ($configPaths as $configPath) {
+		$ifname = basename($configPath, '.conf');
+		$start[] = "/usr/local/bin/wg-quick up {$ifname}";
+		$stop[] = "/usr/local/bin/wg-quick down {$ifname}";
+	}
 
 	$rcfile['file'] = 'wireguard.sh';
-	$rcfile['start'] = $start;
-	$rcfile['stop'] = $stop;
+	$rcfile['start'] = implode("\n\t", $start);
+	$rcfile['stop'] = implode("\n\t", $stop);
 	write_rcfile($rcfile);
 	unlink_if_exists("/usr/local/etc/rc.d/wireguard");
 }
@@ -249,4 +264,10 @@ function wireguard_install() {
 	wireguard_write_rcfile();
 }
 
+# $_SERVER['REQUEST_URI'] == "/pkg_edit.php?xml=wireguard.xml";
+# $_SERVER['QUERY_STRING'] == "xml=wireguard.xml";
+# $_SERVER['PHP_SELF'] == "/pkg_edit.php";
+if ($_SERVER['PHP_SELF'] == "/pkg_edit.php") {
+	echo "<script type='text/javascript' src='wireguard.js'></script>\n";
+}
 ?>

@@ -86,6 +86,7 @@
 			<description>
 				<![CDATA[
 				Base64 private key used for authentication.
+				<div class="btn btn-sm btn-info" onclick="apiGetAsync('privatekey', 'generate'); return false;"><i class="fa fa-undo icon-embed-btn"></i>Generate</div>
 				]]>
 				</description>
 			<type>input</type>
@@ -101,16 +102,6 @@
 				</description>
 			<type>input</type>
 			<encoding>base64</encoding>
-		</field>
-		<field>
-			<fielddescr>Generate Keys</fielddescr>
-			<fieldname>genkeys</fieldname>
-			<description>
-				<![CDATA[
-				Automatically generate new private and public keys.
-				]]>
-			</description>
-			<type>checkbox</type>
 		</field>
 		<field>
 			<fielddescr>MTU</fielddescr>

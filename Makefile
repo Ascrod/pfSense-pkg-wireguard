@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	pfSense-pkg-wireguard
-PORTVERSION=	1.0.0
+PORTVERSION=	1.0.1
 CATEGORIES=	net net-vpn
 MASTER_SITES=	# empty
 DISTFILES=	# empty
