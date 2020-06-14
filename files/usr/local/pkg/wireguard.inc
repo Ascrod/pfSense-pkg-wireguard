@@ -249,7 +249,7 @@ function wireguard_write_rcfile() {
 	$start = $stop = [];
 	foreach ($configPaths as $configPath) {
 		$ifname = basename($configPath, '.conf');
-		$start[] = "/usr/local/bin/wg-quick up {$ifname}";
+		$start[] = "/usr/local/bin/wg-quick up {$ifname} && /etc/rc.filter_configure";
 		$stop[] = "/usr/local/bin/wg-quick down {$ifname}";
 	}
 
