@@ -1,6 +1,6 @@
 /**
  * Wireguard API callback, trigger from apiGetAsync if/when succesful response received.
- * @param {string} responseText 
+ * @param {string} responseText
  * @param {string} configKey the config item to request
  * @param {string} elementID the HTML element ID to put the retreieved data into.
  * returns true if successful. This is leveraged as the function is recursive.
@@ -10,12 +10,12 @@ function apiCallback(responseText, configKey, elementID) {
 	//console.log(responseText);
 	var json = null;
 	try {
-        json = JSON.parse(responseText);
-    }
+		json = JSON.parse(responseText);
+	}
 	catch (e) {
 		console.error("Invalid JSON: " + responseText);
-        return false;
-    }
+		return false;
+	}
 	if (json && configKey in json && json[configKey].length > 1) {
 		if (configKey == "privatekey") { //also need to set the publickey
 			if (!apiCallback(responseText, "publickey")) {
@@ -38,14 +38,14 @@ function apiCallback(responseText, configKey, elementID) {
  * @param {string} elementID the HTML element ID to put the retreieved data into.
  */
 function apiGetAsync(configKey, action, elementID) {
-    var xmlHttp = new XMLHttpRequest();
+	var xmlHttp = new XMLHttpRequest();
 	var url = "/api_wireguard.php?configKey=" + configKey + '&action=' + action;
-    xmlHttp.onreadystatechange = function() { 
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            apiCallback(xmlHttp.responseText, configKey, elementID);
-    }
-    xmlHttp.open("GET", url, true); // true for asynchronous 
-    xmlHttp.send(null);
+	xmlHttp.onreadystatechange = function() {
+		if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+		apiCallback(xmlHttp.responseText, configKey, elementID);
+	}
+	xmlHttp.open("GET", url, true); // true for asynchronous
+	xmlHttp.send(null);
 }
 
 /**
@@ -59,7 +59,7 @@ function makeCode () {
 			document.getElementsByClassName('panel-body')[2].innerHTML = '<div id="config-div"><pre>' + confTxt + '</pre></div><div id="qrcode" style="padding: 15px;"></div>';
 			qrcode = new QRCode("qrcode", {
 				text : confTxt,
-				width : 256, 
+				width : 256,
 				height : 256,
 				typeNumber : 4,
 				colorDark : "#000000",
@@ -74,9 +74,9 @@ function makeCode () {
 			//console.info("update qrcode");
 		}
 	}
-  else {
-	alert("No text");
-  }
+	else {
+		alert("No text");
+	}
 }
 
 /**
@@ -116,13 +116,13 @@ function makeConf() {
 }
 
 /**
- * Load configuration from query string and generate defaults on the 
+ * Load configuration from query string and generate defaults on the
  * wireguard_gen_config.xml page.
  */
 function wireguard_gen_config() {
 	var script = document.createElement("script");
 	script.src = "https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js";
-	document.head.appendChild(script); 
+	document.head.appendChild(script);
 	document.addEventListener("DOMContentLoaded", function(){
 		form = document.getElementsByTagName("form")[0];
 		form.onchange = makeCode;
@@ -143,7 +143,7 @@ function wireguard_gen_config() {
 				document.getElementById('listenport').value = endpoint[1];
 			}
 		}
-		
+
 		//document.getElementById('peer_endpoint').value = ":" + (Math.floor(Math.random() * 16383) + 49152); //49152 to 65535
 		apiGetAsync("listenport", "get", "peer_endpoint_port");
 		apiGetAsync("wan_ip", "get", "peer_endpoint_ip");
@@ -198,11 +198,11 @@ function genPeerQueryStr() {
 function postToPeer() {
 	var url = '/pkg_edit.php?xml=wireguard_peers.xml&act=edit&id=' + getQueryId();
 	//There would be benefit in adding error checking before submit...
-	
+
 	var endpoint = "";
 	if (document.getElementById('listenip').value && document.getElementById('listenport').value)
-		endpoint = document.getElementById('listenip').value + ':' + document.getElementById('listenport').value
-	
+	endpoint = document.getElementById('listenip').value + ':' + document.getElementById('listenport').value
+
 	post(url, {
 		__csrf_magic: document.getElementsByName('__csrf_magic')[0].value,
 		name: document.getElementById('name').value,
@@ -227,7 +227,7 @@ function post(path, params, method='post') {
 	const form = document.createElement('form');
 	form.method = method;
 	form.action = path;
-	
+
 	//Move the submit function to another variable
 	//so that it doesn't get overwritten.
 	form._submit_function_ = form.submit;
