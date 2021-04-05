@@ -1,22 +1,24 @@
 # $FreeBSD$
 
-PORTNAME=	pfSense-pkg-wireguard
-PORTVERSION=	1.0.1
-CATEGORIES=	net net-vpn
+PORTNAME=	pfSense-pkg-WireGuard
+PORTVERSION=	2.0.0
+PORTREVISION=	0
+CATEGORIES=	net
 MASTER_SITES=	# empty
 DISTFILES=	# empty
-EXTRACT_ONLY=	# empty
 
 MAINTAINER=	ascrod@users.noreply.github.com
-COMMENT=	pfSense package wireguard
+COMMENT=	pfSense package WireGuard
 
 LICENSE=	GPLv2
 
-RUN_DEPENDS=	wg:net/wireguard \
-		wireguard-go:net/wireguard-go
+RUN_DEPENDS=	wg-quick:net/wireguard-tools \
+		${KMODDIR}/if_wg.ko:net/wireguard-kmod
 
 NO_BUILD=	yes
 NO_MTREE=	yes
+
+USERS=		metaport
 
 SUB_FILES=	pkg-install pkg-deinstall
 SUB_LIST=	PORTNAME=${PORTNAME}
